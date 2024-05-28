@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+public class PetCaretakers {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        final double WALKING_RATE = 10.0;
+        final double MEDICINE_RATE = 5.0;
+        final double FOOD_RATE = 2.0;
+
+        double totalCharge = 0.0;
+
+        // Arrays to store customer data
+        String[] customers = new String[5];
+        int[][] medicineCounts = new int[5][5];
+
+        for (int customer = 0; customer < 5; customer++) {
+            System.out.print("Enter the name of Customer " + (customer + 1) + ": ");
+            customers[customer] = scanner.next();
+
+            System.out.println("Enter data for dogs of " + customers[customer] + ":");
+            double customerCharge = 0.0;
+
+            for (int dog = 0; dog < 5; dog++) {
+                System.out.println("Dog " + (dog + 1) + ":");
+                System.out.print("Enter time for walking (in hours): ");
+                double walkingTime = scanner.nextDouble();
+
+                System.out.print("Enter the number of medicines taken: ");
+                int medicineCount = scanner.nextInt();
+                medicineCounts[customer][dog] = medicineCount;
+
+                int events;
+                do {
+                    System.out.println("Select an event:");
+                    System.out.println("1. View the number of events");
+                    System.out.println("2. View medicines taken");
+                    System.out.println("0. Exit");
+
+                    events = scanner.nextInt();
+                    switch (events) {
+                        case 1:
+                            System.out.println("Number of events: " + medicineCount);
+                            break;
+                        case 2:
+                            System.out.println("Medicines taken by Dog " + (dog + 1) + ": " + medicineCounts[customer][dog]);
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Try again.");
+                    }
+                } while (events != 0);
+
+                double dogCharge = walkingTime * WALKING_RATE +
+                        medicineCount * MEDICINE_RATE +
+                        mealCount * FOOD_RATE;
+
+                System.out.println("Total charge for Dog " + (dog + 1) + ": $" + dogCharge);
+                customerCharge += dogCharge;
+            }
+
+            System.out.println("Total charge for " + customers[customer] + ": $" + customerCharge);
+            totalCharge += customerCharge;
+        }
+
+        System.out.println("Grand Total Charge for all customers: $" + totalCharge);
+
+        scanner.close();
+    }
+}

@@ -1,0 +1,333 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+class Pet {
+    private String ownerName;
+    private String petName;
+    private String species;
+    private String selectedEvent;
+    private String selectedTimeRange;
+
+    public Pet(String ownerName, String petName, String species) {
+        this.ownerName = ownerName;
+        this.petName = petName;
+        this.species = species;
+        this.selectedEvent = null;
+        this.selectedTimeRange = null;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public String getPetName() {
+        return petName;
+    }
+
+    public String getSpecies() {
+        return species;
+    }
+
+    public String getSelectedEvent() {
+        return selectedEvent;     
+    }
+
+    public void setSelectedEvent(String event) {
+        this.selectedEvent = event;
+    }
+
+    public String getSelectedTimeRange() {
+        return selectedTimeRange;
+    }
+
+    public void setSelectedTimeRange(String timeRange) {
+        this.selectedTimeRange = timeRange;
+    }
+
+    @Override
+    public String toString() {
+        return "Owner: " + ownerName + ", Pet Name: " + petName + ", Species: " + species +
+                ", Event: " + selectedEvent + ", Time Range: " + selectedTimeRange;
+    }
+}
+
+class CareEvent {
+    private String event;
+    private String time;
+    private double charge;
+
+    public CareEvent(String event, String time, double charge) {
+        this.event = event;
+        this.time = time;
+        this.charge = charge;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public double getCharge() {
+        return charge;
+    }
+
+    @Override
+    public String toString() {
+        return "Event: " + event + ", Time: " + time + ", Charge: " + charge + " rupees";
+    }
+}
+
+public class PetPartnerAppSwing {
+    private static List<CareEvent> careEvents = new ArrayList<>();
+    private static List<Pet> pets = new ArrayList<>();
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            createAndShowGUI();
+        });
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("Pet Partner");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 150);
+        frame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        JLabel label = new JLabel("Welcome to Pet Partner!");
+        frame.add(label);
+
+        JButton userButton = new JButton("User Login");
+        userButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                login("User");
+            }
+        });
+        frame.add(userButton);
+
+        JButton caretakerButton = new JButton("Caretaker Login");
+        caretakerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                login("Caretaker");
+            }
+        });
+        frame.add(caretakerButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+        frame.add(exitButton);
+
+        frame.setVisible(true);
+    }
+
+    private static void login(String role) {
+        JFrame loginFrame = new JFrame(role + " Login");
+        loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        loginFrame.setSize(300, 150);
+        loginFrame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField(20);
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField(20);
+        JButton loginButton = new JButton("Login");
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                char[] password = passwordField.getPassword();
+
+                if (role.equals("User")) {
+                    JOptionPane.showMessageDialog(loginFrame, "User login successful!");
+                    openPetDetailsForm(username, loginFrame);
+                } else {
+                    JOptionPane.showMessageDialog(loginFrame, "Caretaker login successful!");
+                    openCaretakerDetailsForm(username, loginFrame);
+                }
+            }
+        });
+
+        loginFrame.add(usernameLabel);
+        loginFrame.add(usernameField);
+        loginFrame.add(passwordLabel);
+        loginFrame.add(passwordField);
+        loginFrame.add(loginButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginFrame.dispose();
+            }
+        });
+        loginFrame.add(exitButton);
+
+        loginFrame.setVisible(true);
+    }
+
+    private static void openPetDetailsForm(String username, JFrame parentFrame) {
+        JFrame petDetailsFrame = new JFrame("Pet Details");
+        petDetailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        petDetailsFrame.setSize(400, 300);
+        petDetailsFrame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        JLabel ownerNameLabel = new JLabel("Owner's Name:");
+        JTextField ownerNameField = new JTextField(20);
+        JLabel petNameLabel = new JLabel("Pet Name:");
+        JTextField petNameField = new JTextField(20);
+        JLabel speciesLabel = new JLabel("Species:");
+        JTextField speciesField = new JTextField(20);
+
+        JLabel eventLabel = new JLabel("Select Pet Care Event:");
+        String[] events = {"Walking", "Feeding", "Playtime", "Grooming", "Hourly Care"};
+        JComboBox<String> eventsComboBox = new JComboBox<>(events);
+
+        JLabel timeLabel = new JLabel("Available Time Range:");
+        String[] timeRanges = {"08:00 - 10:00", "12:00 - 14:00", "16:00 - 18:00", "20:00 - 22:00"};
+        JComboBox<String> timeRangeComboBox = new JComboBox<>(timeRanges);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String ownerName = ownerNameField.getText();
+                String petName = petNameField.getText();
+                String species = speciesField.getText();
+                String selectedEvent = eventsComboBox.getSelectedItem().toString();
+                String selectedTimeRange = timeRangeComboBox.getSelectedItem().toString();
+
+                Pet pet = new Pet(ownerName, petName, species);
+                pet.setSelectedEvent(selectedEvent);
+                pet.setSelectedTimeRange(selectedTimeRange);
+                pets.add(pet);
+
+                JOptionPane.showMessageDialog(petDetailsFrame, "Pet details submitted successfully!");
+            }
+        });
+
+        petDetailsFrame.add(ownerNameLabel);
+        petDetailsFrame.add(ownerNameField);
+        petDetailsFrame.add(petNameLabel);
+        petDetailsFrame.add(petNameField);
+        petDetailsFrame.add(speciesLabel);
+        petDetailsFrame.add(speciesField);
+        petDetailsFrame.add(eventLabel);
+        petDetailsFrame.add(eventsComboBox);
+        petDetailsFrame.add(timeLabel);
+        petDetailsFrame.add(timeRangeComboBox);
+        petDetailsFrame.add(submitButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                petDetailsFrame.dispose();
+            }
+        });
+        petDetailsFrame.add(exitButton);
+
+        petDetailsFrame.setVisible(true);
+    }
+
+    private static void openCaretakerDetailsForm(String username, JFrame parentFrame) {
+        JFrame detailsFrame = new JFrame("Caretaker Details");
+        detailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        detailsFrame.setSize(400, 300);
+        detailsFrame.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+        JLabel nameLabel = new JLabel("Name:");
+        JTextField nameField = new JTextField(20);
+
+        JLabel eventLabel = new JLabel("Select Pet Care Event:");
+        String[] events = {"Walking", "Feeding", "Playtime", "Grooming", "Hourly Care"};
+        JComboBox<String> eventsComboBox = new JComboBox<>(events);
+
+        JLabel timeLabel = new JLabel("Available Time Range:");
+        String[] timeRanges = {"08:00 - 10:00", "12:00 - 14:00", "16:00 - 18:00", "20:00 - 22:00"};
+        JComboBox<String> timeRangeComboBox = new JComboBox<>(timeRanges);
+
+        JButton submitButton = new JButton("Submit");
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = nameField.getText();
+                String selectedEvent = eventsComboBox.getSelectedItem().toString();
+                String selectedTimeRange = timeRangeComboBox.getSelectedItem().toString();
+                double eventCharge = calculateCharges(selectedEvent, selectedTimeRange);
+
+                CareEvent careEvent = new CareEvent(selectedEvent, selectedTimeRange, eventCharge);
+                careEvents.add(careEvent);
+
+                JOptionPane.showMessageDialog(detailsFrame, "You will " + selectedEvent + " from " + selectedTimeRange + ". Amount: " + eventCharge + " rupees");
+                JOptionPane.showMessageDialog(detailsFrame, "Details submitted successfully!");
+            }
+        });
+
+        detailsFrame.add(nameLabel);
+        detailsFrame.add(nameField);
+        detailsFrame.add(eventLabel);
+        detailsFrame.add(eventsComboBox);
+        detailsFrame.add(timeLabel);
+        detailsFrame.add(timeRangeComboBox);
+        detailsFrame.add(submitButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                detailsFrame.dispose();
+            }
+        });
+        detailsFrame.add(exitButton);
+
+        detailsFrame.setVisible(true);
+    }
+
+    private static double calculateCharges(String event, String timeRange) {
+        String[] events = {"Walking", "Feeding", "Playtime", "Grooming", "Hourly Care"};
+        double[] charges = {75.0, 50.0, 60.0, 100.0, 150.0};
+        double eventCharge = 0.0;
+
+        for (int i = 0; i < events.length; i++) {
+            if (event.equals(events[i])) {
+                eventCharge = charges[i];
+                break;
+            }
+        }
+
+        if (event.equals("Hourly Care")) {
+            String[] timeParts = timeRange.split(" - ");
+            String startTime = timeParts[0];
+            String endTime = timeParts[1];
+
+            SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+            try {
+                Date start = timeFormat.parse(startTime);
+                Date end = timeFormat.parse(endTime);
+                long durationMinutes = (end.getTime() - start.getTime()) / (60 * 1000);
+                eventCharge = durationMinutes * charges[4] / 60.0;
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        return eventCharge;
+    }
+}

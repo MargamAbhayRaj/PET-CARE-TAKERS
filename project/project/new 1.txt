@@ -1,0 +1,65 @@
+import java.util.Scanner;
+
+public class PetCaretakers {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        final double WALKING_RATE = 10.0;
+        final double MEDICINE_RATE = 5.0;
+        final double FOOD_RATE = 2.0;
+
+        double totalCharge = 0.0;
+
+        for (int customer = 1; customer <= 5; customer++) {
+            System.out.println("Customer " + customer + ":");
+            double customerCharge = 0.0;
+
+            for (int dog = 1; dog <= 5; dog++) {
+                System.out.println("Dog " + dog + ":");
+                System.out.print("Enter time for walking (in hours): ");
+                double walkingTime = scanner.nextDouble();
+
+                int medicineCount, mealCount;
+                switch (dog) {
+                    case 1:
+                        medicineCount = 2;
+                        mealCount = 3;
+                        break;
+                    case 2:
+                        medicineCount = 1;
+                        mealCount = 2;
+                        break;
+                    case 3:
+                        medicineCount = 3;
+                        mealCount = 4;
+                        break;
+                    case 4:
+                        medicineCount = 2;
+                        mealCount = 3;
+                        break;
+                    case 5:
+                        medicineCount = 1;
+                        mealCount = 2;
+                        break;
+                    default:
+                        medicineCount = 0;
+                        mealCount = 0;
+                }
+
+                double dogCharge = walkingTime * WALKING_RATE +
+                        medicineCount * MEDICINE_RATE +
+                        mealCount * FOOD_RATE;
+
+                System.out.println("Total charge for Dog " + dog + ": $" + dogCharge);
+                customerCharge += dogCharge;
+            }
+
+            System.out.println("Total charge for Customer " + customer + ": $" + customerCharge);
+            totalCharge += customerCharge;
+        }
+
+        System.out.println("Grand Total Charge for all customers: $" + totalCharge);
+
+        scanner.close();
+    }
+}

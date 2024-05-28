@@ -1,0 +1,120 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+class Pet {
+    // ... (unchanged)
+
+    @Override
+    public String toString() {
+        return "Owner: " + ownerName + ", Pet Name: " + petName + ", Species: " + species +
+                ", Event: " + selectedEvent + ", Time Range: " + selectedTimeRange;
+    }
+}
+
+class CareEvent {
+    // ... (unchanged)
+}
+
+public class PetP {
+    private static List<CareEvent> careEvents = new ArrayList<>();
+    private static List<Pet> pets = new ArrayList<>();
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            createAndShowGUI();
+        });
+    }
+
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("Pet Partner");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 150);
+        frame.setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+
+        JLabel label = new JLabel("Welcome to Pet Partner");
+        frame.add(label);
+
+        JButton userButton = new JButton("User Login");
+        userButton.addActionListener(e -> login("User"));
+        frame.add(userButton);
+
+        JButton caretakerButton = new JButton("Caretaker Login");
+        caretakerButton.addActionListener(e -> login("Caretaker"));
+        frame.add(caretakerButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(e -> System.exit(0));
+        frame.add(exitButton);
+
+        frame.setVisible(true);
+    }
+
+    private static void login(String role) {
+        JFrame loginFrame = new JFrame(role + " Login");
+        loginFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        loginFrame.setSize(300, 150);
+        loginFrame.setLayout(new BoxLayout(loginFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+        JLabel usernameLabel = new JLabel("Username:");
+        JTextField usernameField = new JTextField(20);
+        JLabel passwordLabel = new JLabel("Password:");
+        JPasswordField passwordField = new JPasswordField(20);
+        JButton loginButton = new JButton("Login");
+
+        loginButton.addActionListener(e -> {
+            String username = usernameField.getText();
+            char[] password = passwordField.getPassword();
+
+            if (role.equals("User")) {
+                JOptionPane.showMessageDialog(loginFrame, "User login successful!");
+                openPetDetailsForm(username, loginFrame);
+            } else {
+                JOptionPane.showMessageDialog(loginFrame, "Caretaker login successful!");
+                openCaretakerDetailsForm(username, loginFrame);
+            }
+        });
+
+        loginFrame.add(usernameLabel);
+        loginFrame.add(usernameField);
+        loginFrame.add(passwordLabel);
+        loginFrame.add(passwordField);
+        loginFrame.add(loginButton);
+
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(e -> loginFrame.dispose());
+        loginFrame.add(exitButton);
+
+        loginFrame.setVisible(true);
+    }
+
+    private static void openPetDetailsForm(String username, JFrame parentFrame) {
+        JFrame petDetailsFrame = new JFrame("Pet Details");
+        petDetailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        petDetailsFrame.setSize(400, 300);
+        petDetailsFrame.setLayout(new BoxLayout(petDetailsFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+        // ... (remaining pet details form components, same as before)
+
+        petDetailsFrame.setVisible(true);
+    }
+
+    private static void openCaretakerDetailsForm(String username, JFrame parentFrame) {
+        JFrame detailsFrame = new JFrame("Caretaker Details");
+        detailsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        detailsFrame.setSize(900, 300);
+        detailsFrame.setLayout(new BoxLayout(detailsFrame.getContentPane(), BoxLayout.Y_AXIS));
+
+        // ... (remaining caretaker details form components, same as before)
+
+        detailsFrame.setVisible(true);
+    }
+
+    // ... (unchanged)
+}
